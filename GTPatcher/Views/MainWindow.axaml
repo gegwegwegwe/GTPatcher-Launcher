@@ -4,85 +4,312 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
         Title="Gorilla Tag Patcher Launcher"
-        Width="800" Height="450"
-        CanResize="False"
-        x:Class="GTPatcher.Views.MainWindow">
+        Width="900" Height="600"
+        CanResize="True"
+        MinWidth="700"
+        MinHeight="500"
+        x:Class="GTPatcher.Views.MainWindow"
+        WindowStartupLocation="CenterScreen">
 
-	<Grid>
-		<TabControl x:Name="MainTabControl">
-			<!-- Installations Tab -->
-			<TabItem Header="Installations" x:Name="InstallationTab">
-				<Grid>
-					<Grid.RowDefinitions>
-						<RowDefinition Height="Auto"/>
-						<RowDefinition Height="*"/>
-						<RowDefinition Height="Auto"/>
-					</Grid.RowDefinitions>
-					<StackPanel Margin="10">
-						<TextBlock Text="Build" FontWeight="Bold"/>
-						<ComboBox Width="300" x:Name="Builds" SelectionChanged="steamBuildBox_SelectedIndexChanged"/>
-						<TextBlock Text="Manifest" FontWeight="Bold" Margin="0,10,0,0"/>
-						<TextBlock x:Name="manifestIdLabel" Text="No Steam manifest for this build" Margin="0,5,0,0"/>
-						<TextBlock x:Name="descriptionLabel"
-						   Text="No description for this patch"
-						   Margin="0,5,0,0"
-						   FontSize="11"
-						   TextWrapping="Wrap"/>
-					</StackPanel>
-					<Button Grid.Row="2" Content="Play!" HorizontalAlignment="Right" Margin="10" Padding="10,5"  Click="PlayButton"/>
-				</Grid>
-			</TabItem>
+    <Window.Styles>
+        <Style Selector="TextBlock.heading">
+            <Setter Property="FontSize" Value="16"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Margin" Value="0,0,0,8"/>
+        </Style>
+        <Style Selector="TextBlock.info">
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="Margin" Value="0,4,0,0"/>
+        </Style>
+        <Style Selector="TextBlock.description">
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="TextWrapping" Value="Wrap"/>
+            <Setter Property="Margin" Value="0,8,0,0"/>
+            <Setter Property="Foreground" Value="#FF6B6B6B"/>
+        </Style>
+        <Style Selector="Button.primary">
+            <Setter Property="Background" Value="#FF4CAF50"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Padding" Value="20,10"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="CornerRadius" Value="6"/>
+        </Style>
+        <Style Selector="Button.primary:pointerover">
+            <Setter Property="Background" Value="#FF45A049"/>
+        </Style>
+        <Style Selector="Button.primary:disabled">
+            <Setter Property="Background" Value="#FF9E9E9E"/>
+        </Style>
+        <Style Selector="TextBox">
+            <Setter Property="Padding" Value="10,8"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="CornerRadius" Value="4"/>
+        </Style>
+        <Style Selector="Button">
+            <Setter Property="CornerRadius" Value="4"/>
+            <Setter Property="Padding" Value="15,8"/>
+        </Style>
+    </Window.Styles>
 
-			<!-- Settings Tab -->
-			<TabItem Header="Settings" x:Name="SettingsTab">
-				<StackPanel Margin="10">
-					<TextBlock Text="Steam Account Username" FontWeight="Bold" Margin="0,0,0,5"/>
-					<TextBox x:Name="UserTextBox" HorizontalAlignment="Stretch" Margin="0,0,0,5" TextChanged="SteamUserTextBox_TextChanged"/>
-					<TextBlock Text="You will be asked for your account password (and any Steam Guard verification if needed) upon downloading a Steam build of the game" FontSize="10" Margin="0,0,0,20"/>
+    <Grid RowDefinitions="*,Auto">
+        <TabControl x:Name="MainTabControl" Margin="0,0,0,10">
+            <!-- Installations Tab -->
+            <TabItem Header="📦 Installations" x:Name="InstallationTab" FontSize="14">
+                <Grid RowDefinitions="Auto,*,Auto" Margin="15">
+                    <StackPanel Grid.Row="0" Spacing="12">
+                        <StackPanel>
+                            <TextBlock Classes="heading" Text="Select Build Version"/>
+                            <ComboBox x:Name="Builds" 
+                                      HorizontalAlignment="Left"
+                                      Width="400"
+                                      FontSize="13"
+                                      SelectionChanged="Builds_SelectionChanged"
+                                      HorizontalContentAlignment="Left"/>
+                        </StackPanel>
+                        
+                        <Border Background="#FFF5F5F5" 
+                                CornerRadius="8" 
+                                Padding="15"
+                                Margin="0,5,0,0">
+                            <StackPanel Spacing="8">
+                                <StackPanel Orientation="Horizontal" Spacing="10">
+                                    <TextBlock Classes="heading" Text="📋 Manifest ID:" Margin="0"/>
+                                    <TextBlock x:Name="manifestIdLabel" 
+                                               Classes="info"
+                                               Text="No Steam manifest for this build"
+                                               FontWeight="SemiBold"
+                                               Foreground="#FF2196F3"/>
+                                </StackPanel>
+                                
+                                <Separator Background="#FFE0E0E0" Margin="0,5"/>
+                                
+                                <TextBlock Classes="heading" Text="ℹ️ Description" Margin="0,5,0,0"/>
+                                <TextBlock x:Name="descriptionLabel"
+                                           Classes="description"
+                                           Text="No description for this patch"/>
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
+                    
+                    <Border Grid.Row="1" 
+                            Background="#FFF0F0F0" 
+                            CornerRadius="8" 
+                            Margin="0,15,0,0"
+                            Padding="15">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+                            
+                            <TextBlock Grid.Row="0" 
+                                       Classes="heading" 
+                                       Text="🎮 Installation Status"
+                                       Margin="0,0,0,10"/>
+                            
+                            <StackPanel Grid.Row="1" 
+                                        HorizontalAlignment="Center" 
+                                        VerticalAlignment="Center"
+                                        Spacing="15">
+                                <TextBlock x:Name="StatusText" 
+                                           Text="Ready" 
+                                           FontSize="16"
+                                           FontWeight="SemiBold"
+                                           Foreground="#FF4CAF50"
+                                           HorizontalAlignment="Center"/>
+                                
+                                <ProgressBar x:Name="DownloadProgress" 
+                                             IsIndeterminate="false"
+                                             Minimum="0" 
+                                             Maximum="100"
+                                             Value="0"
+                                             Width="300"
+                                             Height="20"
+                                             IsVisible="False"/>
+                                
+                                <TextBlock x:Name="ProgressText" 
+                                           Text="" 
+                                           FontSize="12"
+                                           HorizontalAlignment="Center"
+                                           IsVisible="False"/>
+                            </StackPanel>
+                        </Grid>
+                    </Border>
+                    
+                    <Button Grid.Row="2" 
+                            x:Name="PlayButton"
+                            Classes="primary"
+                            Content="▶ Play!" 
+                            HorizontalAlignment="Right" 
+                            Margin="0,15,0,0"
+                            Click="PlayButton_Click"/>
+                </Grid>
+            </TabItem>
 
-					<TextBlock Text="Installation Path" FontWeight="Bold" Margin="0,0,0,5"/>
-					<Grid>
-						<Grid.ColumnDefinitions>
-							<ColumnDefinition Width="Auto" />
-							<ColumnDefinition Width="*" />
-						</Grid.ColumnDefinitions>
-						<Button Content="Browse..." Grid.Column="0" Click="BrowseButton_Click"/>
-						<TextBox x:Name="PathTextBox" Grid.Column="1" HorizontalAlignment="Stretch" Margin="10,0,0,0" TextChanged="PathTextBox_TextChanged"/>
-					</Grid>
-					<!--
-					<StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,10,0,0">
-						<TextBlock Text="Dark Mode" VerticalAlignment="Center" Margin="0,0,10,0"/>
-						<CheckBox x:Name="DarkModeCheckBox" VerticalAlignment="Center" Checked="DarkModeCheckBox_Checked" Unchecked="DarkModeCheckBox_Unchecked"/>
-					</StackPanel>
-					-->
-				</StackPanel>
-			</TabItem>
+            <!-- Settings Tab -->
+            <TabItem Header="⚙️ Settings" x:Name="SettingsTab" FontSize="14">
+                <ScrollViewer>
+                    <StackPanel Margin="20" Spacing="15" MaxWidth="600" HorizontalAlignment="Left">
+                        <Border Background="#FFF5F5F5" 
+                                CornerRadius="8" 
+                                Padding="20">
+                            <StackPanel Spacing="10">
+                                <TextBlock Classes="heading" Text="👤 Steam Account"/>
+                                <TextBlock Classes="description" 
+                                           Text="Enter your Steam account username. You'll be prompted for your password and Steam Guard code when downloading Steam builds."
+                                           Margin="0,0,0,10"/>
+                                <TextBox x:Name="UserTextBox" 
+                                         Watermark="Steam Username"
+                                         TextChanged="UserTextBox_TextChanged"/>
+                            </StackPanel>
+                        </Border>
 
-			<!-- Info Tab -->
-			<TabItem Header="Info" x:Name="InfoTab">
-				<StackPanel Margin="10">
-					<TextBlock Text="Gorilla Tag Patcher Launcher" FontSize="30" FontWeight="Bold" Margin="0,0,0,0"/>
-					<TextBlock Text="beta 0.5.0" FontSize="14" Margin="0,0,0,275">
-						<ToolTip.Tip>
-							<StackPanel>
-								<TextBlock>Now, these points of data make a beautiful line</TextBlock>
-								<TextBlock>And we're out of beta, we're releasing on time</TextBlock>
-								<TextBlock>So I'm GLaD I got burned, think of all the things we learned</TextBlock>
-								<TextBlock>For the people who are Still Alive</TextBlock>
-							</StackPanel>
-						</ToolTip.Tip>
-					</TextBlock>
-					<TextBlock TextWrapping="Wrap" FontSize="10">
-						GTPatcher is not affiliated with or endorsed by Another Axiom.
-						<LineBreak/>
-						GTPatcher is not intended to aid or facilitate piracy.
-						<LineBreak/>
-						Please do not inquire for help about GTPatcher in any official Another Axiom community.
-						<LineBreak/>
-						Doing so is both annoying to Another Axiom employees and to us. Don't do it!
-					</TextBlock>
-				</StackPanel>
-			</TabItem>
-		</TabControl>
-	</Grid>
+                        <Border Background="#FFF5F5F5" 
+                                CornerRadius="8" 
+                                Padding="20">
+                            <StackPanel Spacing="10">
+                                <TextBlock Classes="heading" Text="📁 Installation Path"/>
+                                <TextBlock Classes="description" 
+                                           Text="Choose where to install Gorilla Tag builds. Each version will be installed in a separate subfolder."
+                                           Margin="0,0,0,10"/>
+                                <Grid ColumnDefinitions="*,Auto">
+                                    <TextBox x:Name="PathTextBox" 
+                                             Grid.Column="0"
+                                             Watermark="Installation path"
+                                             TextChanged="PathTextBox_TextChanged"/>
+                                    <Button Grid.Column="1" 
+                                            Content="📂 Browse..." 
+                                            Margin="10,0,0,0"
+                                            Click="BrowseButton_Click"/>
+                                </Grid>
+                            </StackPanel>
+                        </Border>
+
+                        <Border Background="#FFFFF3E0" 
+                                CornerRadius="8" 
+                                Padding="20">
+                            <StackPanel Spacing="10">
+                                <TextBlock Classes="heading" Text="ℹ️ Important Notes"/>
+                                <TextBlock Classes="description" 
+                                           Text="• You must own Gorilla Tag on Steam to download builds&#10;• Steam Guard may require email/code verification&#10;• Each build is stored separately to avoid conflicts&#10;• Non-Steam builds (like Stick Turn Fix) use direct downloads"
+                                           Margin="0,0,0,5"/>
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
+                </ScrollViewer>
+            </TabItem>
+
+            <!-- Info Tab -->
+            <TabItem Header="ℹ️ Info" x:Name="InfoTab" FontSize="14">
+                <ScrollViewer>
+                    <StackPanel Margin="20" Spacing="20" MaxWidth="700">
+                        <Border Background="#FFE3F2FD" 
+                                CornerRadius="12" 
+                                Padding="25">
+                            <StackPanel Spacing="15">
+                                <TextBlock Text="🦍 Gorilla Tag Patcher Launcher" 
+                                           FontSize="28" 
+                                           FontWeight="Bold"
+                                           Foreground="#FF1976D2"/>
+                                <TextBlock Text="Version 0.5.0-beta" 
+                                           FontSize="14" 
+                                           Foreground="#FF6B6B6B"/>
+                                <Separator Background="#FFBBDEFB"/>
+                                <TextBlock Text="Download and play historical versions of Gorilla Tag with custom patches applied."
+                                           FontSize="14"
+                                           TextWrapping="Wrap"/>
+                            </StackPanel>
+                        </Border>
+
+                        <Border Background="#FFF5F5F5" 
+                                CornerRadius="12" 
+                                Padding="25">
+                            <StackPanel Spacing="15">
+                                <TextBlock Classes="heading" Text="📜 Available Builds"/>
+                                <TextBlock Classes="description" 
+                                           Text="All build information is fetched from the GT Archive Team's repository. This includes manifest IDs for Steam depot downloads and patch files for applying modifications."
+                                           Margin="0,0,0,5"/>
+                                
+                                <Expander Header="🏔️ Mountains Beta (Manifest: 9066807640258182301)" 
+                                          IsExpanded="True"
+                                          Margin="0,10,0,0">
+                                    <TextBlock Classes="description" 
+                                               Text="Branch: beta | Notable for movement glitches and being the most cloned version."
+                                               Margin="0,5,0,0"/>
+                                </Expander>
+                                
+                                <Expander Header="🎃 Halloween 2022 (Manifest: 4819580441710160978)" 
+                                          IsExpanded="False">
+                                    <TextBlock Classes="description" 
+                                               Text="Branch: public | One of the fun updates post-expansion by Another Axiom."
+                                               Margin="0,5,0,0"/>
+                                </Expander>
+                                
+                                <Expander Header="🌈 Neon Colors (Manifest: 1831142320395008381)" 
+                                          IsExpanded="False">
+                                    <TextBlock Classes="description" 
+                                               Text="Branch: public | Last build with unclamped color values, first with MOTD and tap sounds."
+                                               Margin="0,5,0,0"/>
+                                </Expander>
+                                
+                                <Expander Header="🎄 Holiday Overstock (Manifest: 5272615492296865291)" 
+                                          IsExpanded="False">
+                                    <TextBlock Classes="description" 
+                                               Text="Branch: public | Features CanDrop exploits for detaching cosmetics. Great for modding!"
+                                               Margin="0,5,0,0"/>
+                                </Expander>
+                            </StackPanel>
+                        </Border>
+
+                        <Border Background="#FFFFEBEE" 
+                                CornerRadius="12" 
+                                Padding="25">
+                            <StackPanel Spacing="15">
+                                <TextBlock Classes="heading" Text="⚠️ Disclaimer" 
+                                           Foreground="#FFD32F2F"/>
+                                <TextBlock Classes="description" 
+                                           Text="GTPatcher is not affiliated with or endorsed by Another Axiom.&#10;&#10;GTPatcher is not intended to aid or facilitate piracy. Please do not inquire for help about GTPatcher in any official Another Axiom community. Doing so is both annoying to Another Axiom employees and to us. Don't do it!&#10;&#10;All game builds require legitimate ownership through Steam (except for pre-release builds never on Steam)."
+                                           Margin="0,0,0,5"/>
+                            </StackPanel>
+                        </Border>
+
+                        <Border Background="#FFE8F5E9" 
+                                CornerRadius="12" 
+                                Padding="25">
+                            <StackPanel Spacing="10">
+                                <TextBlock Classes="heading" Text="🎵 Easter Egg" 
+                                           Foreground="#FF388E3C"/>
+                                <TextBlock Classes="description" 
+                                           Text="Hover over the version number in older versions for a Portal reference...&#10;&quot;Now, these points of data make a beautiful line&#10;And we're out of beta, we're releasing on time&quot;"
+                                           Margin="0,0,0,5"/>
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
+                </ScrollViewer>
+            </TabItem>
+        </TabControl>
+        
+        <!-- Status Bar -->
+        <Border Grid.Row="1" 
+                Background="#FF323232" 
+                Padding="15,10">
+            <Grid ColumnDefinitions="*,Auto">
+                <TextBlock x:Name="StatusBarText" 
+                           Grid.Column="0"
+                           Text="Ready - Select a build and click Play!" 
+                           Foreground="White"
+                           VerticalAlignment="Center"/>
+                <StackPanel Grid.Column="1" 
+                            Orientation="Horizontal" 
+                            Spacing="15">
+                    <TextBlock Text="📡 Online" 
+                               Foreground="#FF4CAF50"
+                               VerticalAlignment="Center"
+                               FontWeight="SemiBold"/>
+                </StackPanel>
+            </Grid>
+        </Border>
+    </Grid>
 </Window>
