@@ -1,20 +1,27 @@
 ```
+# Dependencies
+node_modules/
+.venv/
+venv/
+__pycache__/
+.mypy_cache/
+.pytest_cache/
+packages/
+
 # Build artifacts
+bin/
+obj/
+Debug/
+Release/
 *.dll
 *.exe
 *.pdb
-*.nupkg
-*.snupkg
-bin/
-obj/
-out/
+*.mdb
 
-# Dependencies
-packages/
-node_modules/
-
-# Logs
+# Logs and temp files
 *.log
+*.tmp
+*.swp
 
 # Environment
 .env
@@ -24,12 +31,19 @@ node_modules/
 # Editors
 .vscode/
 .idea/
-*.suo
-*.user
-*.userosscache
-*.sln.docstates
+*.userprefs
 
-# OS generated files
+# OS
 .DS_Store
 Thumbs.db
+
+# Archives
+*.zip
+*.gz
+*.tar
+*.tgz
+*.bz2
+*.xz
+*.7z
+*.rar
 ```
